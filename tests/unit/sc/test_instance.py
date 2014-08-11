@@ -108,6 +108,19 @@ class SCVirtualMachineTest(SCBaseTestCase):
         ret = vm.cancelEncryption(device)
         self.assertEqual(ret, 204)
 
+    def testDeleteComputer(self):
+        VMID = "b2f57910-0543-491e-92d7-ab00a47448de"
+
+        vm = self.connection.getVM(VMID)
+
+        #
+        # Write destory device key code here before deleting computer
+        #
+
+        # Delete computer
+        ret = vm.delete()
+        self.assertEqual(ret, 204)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -39,13 +39,21 @@ class SCDeviceTest(SCBaseTestCase):
         #===== implement initial code here for each test =====
         pass
 
-    def testGetDevice(self):
-        # API Retired (2013/02/20)
-        # /device/xxxxxxxx-0d22-4fe3-b3fc-6698a882157b/ RESTFul API has been blocked. It's gone
-        # for device in self.devices:
-        #    dev = self.connection.getDevice(device.msUID)
-        #   self.assertEqual(dev, None)
-        pass
+    def testDeleteKey(self):
+        VMID = "1186096f-c73c-4b77-b4ed-bc6089029a05"
+        DID = "e0638bed-d137-4c7f-86d9-ccc19d108d87"
+
+        vm = self.connection.getVM(VMID)
+        device = vm.getDevice(DID)
+
+        #
+        # Write destory device key code here before deleting computer
+        #
+
+        # Delete computer
+        ret = vm.deleteKey(device)
+        self.assertEqual(ret, 204)
+
 
 if __name__ == '__main__':
     unittest.main()

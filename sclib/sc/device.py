@@ -31,12 +31,13 @@ class Device(SCObject):
     ValidAttributes = ['id', 'msUID', "name", 'href',
                        'deviceType', 'cspDeviceType', 'deviceState', 'deviceStatus',
                        'info', 'detachable', 'lastModified', 'writeAccess',
-                       'EncryptedName', 'partitionType', 'preserveData', 
-                       'provisionProgress', 'provisionState', 
+                       'EncryptedName', 'partitionType', 'preserveData',
+                       'provisionProgress', 'provisionState',
                        'raidLevel']
 
     def __init__(self, connection, tag='Device'):
         SCObject.__init__(self, connection, tag)
+
         #----------------------------------------------------------------------
         # Attributes
         #----------------------------------------------------------------------
@@ -151,28 +152,36 @@ class Device(SCObject):
 
         return device
 
-    # ---------- function ----------
+    #
+    # ---------- encryption key function ----------
+    #
+    # TODO: wait bug fixing for self.href attribute to present correct device URL
+    #
 
     def exportKey(self):
-        action = 'vm/%s/device/%s/keyfile/' % (self.imageGUID, self.msUID)
+        action = '%s/keyfile/' % (self.href)
         data = self.tostring()
         response = self.connection.make_request(
             action, data=data, method='POST')
         return response
 
     def importKey(self):
-        action = 'vm/%s/device/%s/key/' % (self.imageGUID, self.msUID)
+        action = '%s/key/' % (self.href)
         data = self.tostring()
         response = self.connection.make_request(
             action, data=data, method='POST')
         return response
 
     def deleteKey(self):
-        action = 'vm/%s/device/%s/key/' % (self.imageGUID, self.msUID)
+        action = '%s/key/' % (self.href)
         data = self.tostring()
         response = self.connection.make_request(
-            action, data=data, method='DELETE')
+            action, method='DELETE')
         return response
+
+    #
+    # TODO: end of bug
+    #
 
 class Volume (SCObject):
 

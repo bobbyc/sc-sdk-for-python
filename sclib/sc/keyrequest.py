@@ -69,6 +69,7 @@ class KeyRequest(SCObject):
                                                             self.connection.REST_KEY_REQUEST,
                                                             self.requestID,
                                                             'approve'),
+                                          data=self.tostring(),
                                           method='POST')
 
     def deny(self):
@@ -76,6 +77,7 @@ class KeyRequest(SCObject):
                                                             self.connection.REST_KEY_REQUEST,
                                                             self.requestID,
                                                             'deny'),
+                                          data=self.tostring(),
                                           method='POST')
 
     def revoke(self):
@@ -83,6 +85,7 @@ class KeyRequest(SCObject):
                                                             self.connection.REST_KEY_REQUEST,
                                                             self.requestID,
                                                             'revoke'),
+                                          data=self.tostring(),
                                           method='POST')
 
     def ignore(self):
@@ -90,6 +93,7 @@ class KeyRequest(SCObject):
                                                             self.connection.REST_KEY_REQUEST,
                                                             self.requestID,
                                                             'ignore'),
+                                          data=self.tostring(),
                                           method='POST')
 
     def run_icm(self):
@@ -97,6 +101,7 @@ class KeyRequest(SCObject):
                                                             self.connection.REST_KEY_REQUEST,
                                                             self.requestID,
                                                             'runicm'),
+                                          data=self.tostring(),
                                           method='POST')
 
 

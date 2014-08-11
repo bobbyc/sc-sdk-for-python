@@ -304,10 +304,15 @@ class VerifiedHTTPSConnection(httplib.HTTPSConnection):
             self.sock = sock
             self._tunnel()
 
+        #
         # wrap the socket using verification with the root certs in
-        # trusted_root_certs
-        cacert_path = os.path.join(
-            os.path.dirname(os.path.abspath(sclib.__file__)), 'cacerts', 'cacert.pem')
+        # trusted_root_certs (cacert.pem)
+        # If SSL_CERTIFICATE is none, use cacert.pem by default
+        #
+        cacert = sclib.__config__.get('connection', 'SSL_CERTIFICATE', 'cacert.pem')
+        if cacert is not None:
+            cacert_path = os.path.join(
+                os.path.dirname(os.path.abspath(sclib.__file__)), 'cacerts', cacert)
 
         self.sock = ssl.wrap_socket(sock,
                                     self.key_file,
@@ -358,19 +363,17 @@ class SCAuthConnection:
                         }
 
         #
-        # wrap the socket using verification with the root certs in trusted_root_certs
-        #
-        cacert_path = os.path.join(
-            os.path.dirname(os.path.abspath(sclib.__file__)), 'cacerts', 'cacert.pem')
-        validation = sclib.__config__.get('connection', 'SSL_VALIDATION')
-
         # setup HTTPS handler (Verified or Bypass)
+        #
+        validation = sclib.__config__.get('connection', 'SSL_VALIDATION')
         if (validation == 'Disable' or not https):
             self.opener = urllib2.build_opener(BypassHTTPSHandler())
         else:
             self.opener = urllib2.build_opener(VerifiedHTTPSHandler())
 
+        #
         # add digest handler if digest information provided
+        #
         if broker_name and broker_passphase:
             self.pwd_mgr = urllib2.HTTPPasswordMgr()
             self.pwd_mgr.add_password(
@@ -415,13 +418,20 @@ class SCAuthConnection:
 
     def make_request(self, action='', params=None, headers=None, data='', method='GET'):
 
-        # prepare request url
-        api_url = '%s/%s' % (self.base_url, action)
+        #
+        # prepare request url. If action includes full base_url, then directly calls action
+        #
+        if isinstance(action, (str, unicode)) and action.find(self.base_url) == 0:
+            api_url = action
+        else:
+            api_url = '%s/%s' % (self.base_url, action)
 
-        # make request
+        #
+        # make request with action and parameters
+        #
+        response = None
         req = self.build_request(api_url, params, headers, data, method)
 
-        response = None
         try:
             response = self.opener.open(req)
 

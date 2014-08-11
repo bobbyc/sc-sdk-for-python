@@ -34,7 +34,7 @@ class SCConnectionFilter(SCConnection):
         # serialize Request data
         sclib.log.debug("---------- RESTFul Request ---------- " )
         sclib.log.debug('%s %s' % (method, action))
-        rf = io.open(reqfile, 'wb')
+        rf = io.open(reqfile, 'w')
         if data:
             # Format request data
             formated = self.nice_format(data)
@@ -51,7 +51,7 @@ class SCConnectionFilter(SCConnection):
             body = response.read()
             
             # serialize Response data
-            f = io.open(resfile, 'wb')
+            f = io.open(resfile, 'w')
             if body:
                 # Format response data
                 formated = self.nice_format(body)

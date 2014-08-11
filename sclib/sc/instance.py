@@ -41,7 +41,7 @@ class VirtualMachine(SCObject):
     #=========================================================================
 
     # Present valid vm object attributes, not inner objects
-    ValidAttributes = ['SecurityGroupGUID', 
+    ValidAttributes = ['SecurityGroupGUID',
                        'autoProvision', 'nonEncryptedDeviceCount', 'detectedKeyCount',
                        'encryptableDeviceCount', 'encryptedDeviceCount', 'encryptingDeviceCount', 'pendingDeviceCount',
                        'hostname', 'href',
@@ -132,7 +132,7 @@ class VirtualMachine(SCObject):
         if getattr(self, 'provider'):
             vm.append(self.provider.buildElements())
         if getattr(self, 'platform'):
-            vm.append(self.platform.buildElements())
+            vm.attrib['platform'] = self.platform
         if getattr(self, 'securecloudAgent'):
             vm.append(self.securecloudAgent.buildElements())
         if getattr(self, 'devices'):
@@ -152,7 +152,7 @@ class VirtualMachine(SCObject):
         data = self.tostring()
         update = self.connection.get_object(
             action, VirtualMachine, data=data, method='POST')
-        
+
         if update:
             self._update(update)
             return self
@@ -163,7 +163,7 @@ class VirtualMachine(SCObject):
         #----------------------------------------------------------------------
         # delete vm itself
         #----------------------------------------------------------------------
-        action = 'vm/%s/' % self.imageGUID
+        action = 'vm/%s/' % (self.imageGUID)
         return self.connection.get_status(action, method='DELETE')
 
     def getDevice(self, deviceID):
@@ -207,16 +207,30 @@ class VirtualMachine(SCObject):
             # Do Request
             action = 'vm/%s/encrypt/' % (self.imageGUID)
             data = vm.tostring()
-            response = self.connection.get_status(action, method='POST', data=data)
+            response = self.connection.get_status(
+                action, method='POST', data=data)
 
         return response
 
     def cancelEncryption(self, DeviceObj):
         # Create New Virtual Machine message for encrypt device object
         response = None
-        
+
         if isinstance(DeviceObj, Device):
-            action = 'vm/%s/device/%s/encrypt/' % (self.imageGUID, DeviceObj.msUID)
+            action = 'vm/%s/device/%s/encrypt/' % (self.imageGUID,
+                                                   DeviceObj.msUID)
+            response = self.connection.get_status(
+                action, method='DELETE')
+
+        return response
+
+    def deleteKey(self, DeviceObj):
+        # Create New Virtual Machine message for encrypt device object
+        response = None
+
+        if isinstance(DeviceObj, Device):
+            action = 'vm/%s/device/%s/key/' % (self.imageGUID,
+                                                   DeviceObj.msUID)
             response = self.connection.get_status(
                 action, method='DELETE')
 

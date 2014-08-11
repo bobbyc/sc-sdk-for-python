@@ -36,6 +36,7 @@ Please make sure you already install pip - a tool for installing and managing Py
 	MS_BROKER_NAME = <your broker name>
 	MS_BROKER_PASSPHASE = <your passphase>
 	SSL_VALIDATION = <Enable/Disable>
+	SSL_CERTIFICATE = <cert file name>
 
 	[authentication]
 	AUTH_NAME = <your account(email)>
@@ -43,25 +44,30 @@ Please make sure you already install pip - a tool for installing and managing Py
 	
 ###Configuration Parameters:
 	
-- `MS_HOST` (MUST)
+- **MS_HOST** (MUST)
 
-URL for the SecureCloud Management API entry point
+	URL for the SecureCloud Management API entry point
 
-- `MS_BROKER_NAME` (MUST)
+- **MS_BROKER_NAME** (MUST)
 
-Broker name. Please get this broker from Administrator
+	Broker name. Please get this broker from Administrator
 
-- `MS_BROKER_PASSPHASE` (MUST)
+- **MS_BROKER_PASSPHASE** (MUST)
 
-Password of broker name. Please get this from Administrator
+	Password of broker name. Please get this from Administrator
 
-- `SSL_VALIDATION` (OPTIONAL)
+- **SSL_VALIDATION** (OPTIONAL)
 
-Enable/Disable SSL validation. When disabled, SDK will bypass HTTPS (SSL) certificate checking.
+	**Enable**/**Disable** SSL validation. When disabled, SDK will bypass HTTPS (SSL) certificate checking.
 
-- `AUTH_NAME` (MUST)
+- **SSL_CERTIFICATE** (OPTIONAL)
 
-- `AUTH_PASSWORD` (MUST)
+	Specify file name. This parameter will search certificate in **/cacert** folder.
+
+
+- **AUTH_NAME** (MUST)
+
+- **AUTH_PASSWORD** (MUST)
 
 ## Unit Test
 
