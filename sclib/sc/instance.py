@@ -272,12 +272,17 @@ class VirtualMachine(SCObject):
         else:
             dev.msUID = str(uuid.uuid4())
             
+<<<<<<< HEAD
         #dev.raidLevel = 'RAID0'
         dev.raidLevel = raid_level
         dev.fileSystem = filesystem
 
         if writeAccess != None:
             dev.writeaccess = writeAccess
+=======
+        dev.raidLevel = 'RAID0'
+        dev.fileSystem = filesystem
+>>>>>>> master
             
         dev.volume = Volume(self.connection)
         dev.volume.mountPoint = mountpoint

@@ -368,3 +368,76 @@ class SecurityGroupAction(SCObject):
             action.attrib['autoDelay'] = self.autoDelay
         # actions
         return action
+    
+
+class SecurityGroupSetting(SCObject):
+
+    ValidAttributes = ['ScheduleType', 'ScheduleIntervalTime', 'ScheduleIntervalPeriod', 'ScheduleIntervalDay',
+                       'ReAttemptInterval', 'ReAttemptIntervalType', 'ReAttemptICRepeat']
+
+    def __init__(self, connection):
+        SCObject.__init__(self, connection)
+        self.ScheduleType = None
+        self.ScheduleIntervalTime = None
+        self.ScheduleIntervalPeriod = None
+        self.ScheduleIntervalDay = None
+        self.ReAttemptInterval = None
+        self.ReAttemptIntervalType = None
+        self.ReAttemptICRepeat = None
+
+    def startElement(self, name, attrs, connection):
+        ret = SCObject.startElement(self, name, attrs, connection)
+        if ret is not None:
+            return ret
+
+        if name == 'securityGroupSetting':
+            for key, value in attrs.items():
+                if key in self.ValidAttributes:
+                    setattr(self, key, value)
+        else:
+            return None
+
+    def endElement(self, name, value, connection):
+        if name == 'ScheduleType':
+            self.ScheduleType = value
+        elif name == 'ScheduleIntervalTime':
+            self.ScheduleIntervalTime = value
+        elif name == 'ScheduleIntervalPeriod':
+            self.ScheduleIntervalPeriod = value
+        elif name == 'ScheduleIntervalDay':
+            self.ScheduleIntervalDay = value
+        elif name == 'ReAttemptInterval':
+            self.ReAttemptInterval = value
+        elif name == 'ReAttemptIntervalType':
+            self.ReAttemptIntervalType = value
+        elif name == 'ReAttemptICRepeat':
+            self.ReAttemptICRepeat = value
+
+    def buildElements(self):
+        setting = ElementTree.Element('securityGroupSetting')
+
+        # Set all valid Elements
+        if self.ScheduleType:
+            setting.attrib['ScheduleType'] = self.ScheduleType
+        if self.ScheduleIntervalTime:
+            setting.attrib['ScheduleIntervalTime'] = self.ScheduleIntervalTime
+        if self.ScheduleIntervalPeriod:
+            setting.attrib['ScheduleIntervalPeriod'] = self.ScheduleIntervalPeriod
+        if self.ScheduleIntervalDay:
+            setting.attrib['ScheduleIntervalDay'] = self.ScheduleIntervalDay
+        if self.ReAttemptInterval:
+            setting.attrib['ReAttemptInterval'] = self.ReAttemptInterval
+        if self.ReAttemptIntervalType:
+            setting.attrib['ReAttemptIntervalType'] = self.ReAttemptIntervalType
+        if self.ReAttemptICRepeat:
+            setting.attrib['ReAttemptICRepeat'] = self.ReAttemptICRepeat
+
+        return setting
+
+    def update(self):
+        #action = 'securityGroupSetting/'
+        action = '%s/' % (self.connection.REST_SECURITY_GROUP_SETTING)
+        data = self.tostring()
+        response = self.connection.get_status(action, data=data, method='POST')
+        return response
+

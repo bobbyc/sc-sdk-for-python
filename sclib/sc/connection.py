@@ -32,7 +32,7 @@ from sclib.sc.scobject import SCObject
 from sclib.sc.instance import VirtualMachine, Instance
 from sclib.sc.provider import Provider
 from sclib.sc.keyrequest import KeyRequest, RunningVM, RunningDevice
-from sclib.sc.securitygroup import SecurityGroup, SecurityRule, SecurityRuleType, SecurityGroupAction
+from sclib.sc.securitygroup import SecurityGroup, SecurityRule, SecurityRuleType, SecurityGroupAction, SecurityGroupSetting
 from sclib.sc.administration import DSMConnSettings, KMIPConnSettings, Timezone, Language, License
 
 from xml.dom.minidom import parse, parseString
@@ -128,6 +128,7 @@ class SCConnection(SCQueryConnection):
     REST_BASIC_AUTH = 'userBasicAuth'
     REST_DEVICE = 'device'
     REST_SECURITY_GROUP = 'SecurityGroup'
+    REST_SECURITY_GROUP_SETTING = 'securityGroupSetting'
     REST_SECURITY_RULE = 'SecurityRule'
     REST_SECURITY_RULE_TYPE = 'SecurityRule'
     REST_USER = 'user'
@@ -271,6 +272,12 @@ class SCConnection(SCQueryConnection):
         rule = self.get_object('%s/%s/' % (self.REST_SECURITY_RULE_TYPE, id),
                                SecurityRuleType)
         return rule
+
+    def getSecurityGroupSetting(self):
+        if self.isAuthenticated() is False:
+            return None
+
+        return self.get_object(self.REST_SECURITY_GROUP_SETTING, SecurityGroupSetting)
 
     #=========================================================================
     # function - User
@@ -438,6 +445,18 @@ class SCConnection(SCQueryConnection):
 
         # get account info with current connection
         return self.get_object('%s/' % (self.REST_LICENSE), License)
+
+    def setLicense(self, ac):
+        if self.isAuthenticated() is False:
+            return None
+
+        objLicense = License(self)
+        objLicense.ac = ac
+        
+        action = '%s/' % (self.REST_LICENSE)
+        data = objLicense.tostring()
+        
+        return self.get_status(action, data=data, method='POST')
 
     #-------------------------------------------------------------------------
     # Administration - Language

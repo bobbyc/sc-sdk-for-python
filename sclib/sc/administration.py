@@ -84,6 +84,12 @@ class DSMConnSettings(SCObject):
 
         return setting
 
+    def update(self):
+        action = '%s/' % (self.connection.REST_DSM_SETTING)
+        data = self.tostring()
+        response = self.connection.get_status(action, data=data, method='POST')
+        return response
+    
 
 class KMIPConnSettings(SCObject):
 
@@ -201,7 +207,7 @@ class Language(SCObject):
         # build attributes
         for e in self.ValidAttributes:
             if getattr(self, e):
-                setting.attrib[e] = getattr(self, e)
+                language.attrib[e] = getattr(self, e)
 
         return language
 
@@ -244,8 +250,8 @@ class Timezone(SCObject):
 
 
 class License(SCObject):
-    ValidAttributes = ['ac', 'account', 'activationDate', 'expirationDate', 'expireNotificationDate'
-                       'gracePeriod', 'id', 'inUse', 'isPRLicense', 'isTrial', 'lastUpdate', 'seats'
+    ValidAttributes = ['ac', 'account', 'activationDate', 'expirationDate', 'expireNotificationDate',
+                       'gracePeriod', 'id', 'inUse', 'isPRLicense', 'isTrial', 'lastUpdate', 'seats',
                        'updateInterval', 'verifyStatus', 'LicenseProfile']
 
     def __init__(self, connection):
@@ -291,10 +297,11 @@ class License(SCObject):
         # build attributes
         for e in self.ValidAttributes:
             if getattr(self, e):
-                setting.attrib[e] = getattr(self, e)
+                license.attrib[e] = getattr(self, e)
 
         if self.LicenseProfile:
             ElementTree.SubElement(
                 license, "LicenseProfile").text = self.LicenseProfile
 
         return license
+

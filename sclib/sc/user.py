@@ -163,14 +163,14 @@ class User(SCObject):
 
 class Account(SCObject):
 
-    ValidAttributes = ['name', 'id', 'dataFormat',
+    ValidAttributes = ['name', 'id', 'dateFormat',
                        'passphrase', 'sessionTimeout', 'timezoneID']
 
     def __init__(self, connection):
         SCObject.__init__(self, connection)
         self.name = None
         self.id = None
-        self.dataFormat = None
+        self.dateFormat = None
         self.passphrase = None
         self.sessionTimeout = None
         self.timezoneID = None
@@ -195,8 +195,8 @@ class Account(SCObject):
             account.attrib['id'] = self.id
         if self.name:
             account.attrib['name'] = self.name
-        if self.dataFormat:
-            account.attrib['dataFormat'] = self.dataFormat
+        if self.dateFormat:
+            account.attrib['dateFormat'] = self.dateFormat
         if self.passphrase:
             account.attrib['passphrase'] = self.passphrase
         if self.sessionTimeout:
