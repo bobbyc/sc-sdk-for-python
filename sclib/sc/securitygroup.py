@@ -181,7 +181,7 @@ class SecurityRule(SCObject):
         # inner objects
         self.securityRuleType = None
         self.deviceList = None
-        self.securityRuleConditionList = None
+        self.securityRuleConditionList = ResultSet([('securityRuleCondition', SecurityRuleCondition)], "securityRuleConditionList")
 
     def startElement(self, name, attrs, connection):
         ret = SCObject.startElement(self, name, attrs, connection)

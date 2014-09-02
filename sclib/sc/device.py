@@ -152,6 +152,20 @@ class Device(SCObject):
 
         return device
 
+    def _update(self, updated):
+        self.__dict__.update(updated.__dict__)
+   
+    def update(self, imageGUID):
+        action = 'vm/%s/device/%s/' % (imageGUID, self.msUID)
+        data = self.tostring()
+        updated = self.connection.make_request(action, data=data, method='POST')
+
+        if updated:
+            self._update(updated)
+            return self
+        
+        return updated
+
     #
     # ---------- encryption key function ----------
     #

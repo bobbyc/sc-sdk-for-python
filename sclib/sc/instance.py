@@ -184,6 +184,30 @@ class VirtualMachine(SCObject):
 
     # ----- Encryption -----
 
+    def encrypt(self):
+        #-----------------------------------------------------------------------
+        # encrypt a VM/Computer
+        #-----------------------------------------------------------------------
+
+        action = 'vm/%s/encrypt/' % (self.imageGUID)
+
+        vm = VirtualMachine(self.connection)
+        vm.imageGUID = self.imageGUID
+
+        for objDevice in self.devices:
+            device = Device(self.connection)
+            device.msUID = objDevice.msUID
+            device.preserveData = 'yes'
+            device.fileSystem = objDevice.fileSystem
+            # Create inner volume object
+            device.volume = Volume(self.connection)
+            device.volume.mountPoint = objDevice.volume.mountPoint
+            vm.devices.append(device)
+
+        data = vm.tostring()
+
+        return self.connection.get_status(action, data=data, method='POST')
+
     def encryptDevice(self, DeviceObj, filesystem, mountpoint, preserveData="no"):
         #----------------------------------------------------------------------
         # encrypt devices in a VM/Computer
@@ -238,7 +262,7 @@ class VirtualMachine(SCObject):
 
     # ----- Create RAID device
 
-    def createRAID(self, name, filesystem, mountpoint, device_id_list, deviceID=None):
+    def createRAID(self, name, raid_level, filesystem, writeAccess, mountpoint, device_id_list, deviceID=None):
 
         # create raid device object
         dev = Device(self.connection)
@@ -247,8 +271,14 @@ class VirtualMachine(SCObject):
             dev.msUID = deviceID
         else:
             dev.msUID = str(uuid.uuid4())
-        dev.raidLevel = 'RAID0'
+            
+        #dev.raidLevel = 'RAID0'
+        dev.raidLevel = raid_level
         dev.fileSystem = filesystem
+
+        if writeAccess != None:
+            dev.writeaccess = writeAccess
+            
         dev.volume = Volume(self.connection)
         dev.volume.mountPoint = mountpoint
 

@@ -232,16 +232,19 @@ class SCConnection(SCQueryConnection):
                                SecurityGroup)
         return rule
 
-    def createSecurityGroup(self, name):
+    def createSecurityGroup(self, objSecurityGroup):
         if self.authentication is None:
             return None
 
-        policy = SecurityGroup(self)
-        policy.name = name
+        #policy = SecurityGroup(self)
+        #policy.name = name
         # Test default value here
         #========================
-
-        data = policy.tostring()
+        if isinstance(objSecurityGroup, SecurityGroup):
+            data = objSecurityGroup.tostring()
+        else:
+            data = ''
+            
         policy = self.get_object('%s/' % (self.REST_SECURITY_GROUP),
                                  SecurityGroup, data=data, method='POST')
         return policy

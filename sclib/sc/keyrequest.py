@@ -96,6 +96,38 @@ class KeyRequest(SCObject):
                                           data=self.tostring(),
                                           method='POST')
 
+    def deliver(self):
+        return self.connection.get_status( '%s/%s/%s/%s/' % (self.connection.REST_RUNNING_VM, 
+                                                             self.connection.REST_KEY_REQUEST, 
+                                                             self.requestID, 
+                                                             'deliver' ),
+                                          data=self.tostring(),
+                                          method='POST')
+    
+    def failure(self):
+        return self.connection.get_status( '%s/%s/%s/%s/' % (self.connection.REST_RUNNING_VM, 
+                                                             self.connection.REST_KEY_REQUEST, 
+                                                             self.requestID, 
+                                                             'failure' ),
+                                          data=self.tostring(),
+                                          method='POST')
+    
+    def expired(self):
+        return self.connection.get_status( '%s/%s/%s/%s/' % (self.connection.REST_RUNNING_VM, 
+                                                             self.connection.REST_KEY_REQUEST, 
+                                                             self.requestID, 
+                                                             'expired' ),
+                                          data=self.tostring(),
+                                          method='POST')
+    
+    def pending(self):     
+        return self.connection.get_status( '%s/%s/%s/%s/' % (self.connection.REST_RUNNING_VM, 
+                                                             self.connection.REST_KEY_REQUEST, 
+                                                             self.requestID, 
+                                                             'pending' ),
+                                          data=self.tostring(),
+                                          method='POST')
+
     def run_icm(self):
         return self.connection.get_status('%s/%s/%s/%s/' % (self.connection.REST_RUNNING_VM,
                                                             self.connection.REST_KEY_REQUEST,
